@@ -86,7 +86,7 @@ a {
   top: 0;
   -webkit-user-select: none;
   user-select: none;
-  white-space: nowrap
+  white-space: nowrap;
 }
 
 .top-buffer {
@@ -126,6 +126,7 @@ a {
   width: 100%!important;
   color: #172b4d;
   padding-bottom: 4px;
+  max-width: 272px;
 }
 
 .column-header {
@@ -146,6 +147,8 @@ a {
   min-height: 20px;
   color: #ebecf0;
   left: 12px;
+  display: flex;
+  align-items: center;
 }
 
 @supports (selector(:has(*))) {
@@ -360,4 +363,45 @@ textarea {
   float: left;
   margin-top: 9px;
   padding-left: 8px;
+}
+
+.new-input {
+  border-radius: 8px;
+  cursor: pointer;
+  position: relative;
+  background-color: #777;
+  color: #EBECF0;
+  font-size: 14px;
+  resize: none;
+  overflow-x: hidden;
+  outline: none;
+  height: 25px;
+  width: 100%;
+}
+
+.new-input::placeholder {
+ color: #EBECF0;
+}
+
+.new-column-content {
+  background-color: #ffffff3d;
+  border-radius: 12px;
+  cursor: pointer;
+}
+
+.btn-container {
+  padding-top: 6px;
+}
+
+.column-textarea {
+  border-radius: 8px;
+  cursor: pointer;
+  position: relative;
+  background-color: #777;
+  color: #EBECF0;
+  font-size: 14px;
+  resize: none;
+  overflow-x: hidden;
+  outline: none;
+  height: 26px;
 }

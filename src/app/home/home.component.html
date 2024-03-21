@@ -2,20 +2,15 @@
 <app-sidenav></app-sidenav>
 <div class="board-wrapper">
     <div class="board-main-content">
-        <div class="board-header">
-    
-        </div>
         <div class="board-canvas">
             <ol class="table-container" cdkDropListGroup>
-            
-                <!-- To do items column -->
-                <li class="column" cdkDropList [cdkDropListData]="todoItems" (cdkDropListDropped)="drop($event)">
-                    <div class="column-wrapper">
+                <li class="column" *ngFor="let column of columns; let i = index" cdkDropList [cdkDropListData]="column.items" (cdkDropListDropped)="drop($event, i)">
+                    <div class="column-wrapper" cdkDrag cdkDropList (cdkDropListData)="columns" (cdkDropListDropped)="dropColumn($event)">
                         <div class="column-header">
                             <div class="header">
-                                <h2 role="textbox">To-do</h2>
+                                <h2 role="textbox">{{ column.name }}</h2>
                             </div>
-                            <button #todoBtn class="column-button" (click)="openTodoDialog()">
+                            <button #addColumnBtn class="column-button" (click)="openDialog(addColumnBtn)">
                                 <span class="btn-icon">
                                     <span class="overflow-menu">
                                         <mat-icon class="menu-icon">menu</mat-icon>
@@ -25,16 +20,16 @@
                         </div>
                         <div class="top-buffer"></div>
                         <ol class="column-list" data-auto-scrollable="true">
-                            <li class="data-column-list" *ngFor="let item of todoItems; let i = index" cdkDrag [cdkDragDisabled]="item.editing">
+                            <li class="data-column-list" *ngFor="let item of column.items; let j = index" cdkDrag [cdkDragDisabled]="item.editing">
                                 <div class="column-item">
                                     <div class="card" *ngIf="!item.editing">
                                         <a class="item" href="/" dir="auto">{{ item.value }}</a>
                                     </div>
                                     <div class="edit-item" *ngIf="item.editing">
                                         <textarea matInput [(ngModel)]="item.value" class="edit-textarea"></textarea>
-                                        <button mat-raised-button color="primary" class="save-btn" (click)="saveChanges(i, todoItems)">Save</button>
+                                        <button mat-raised-button color="primary" class="save-btn" (click)="saveChanges(i, j)">Save</button>
                                     </div>
-                                    <button class="edit-card" (click)="startEditing(item)">
+                                    <button class="edit-card" (click)="startEditing(i, j)">
                                         <span *ngIf="!item.editing">
                                             <mat-icon class="edit-icon">edit</mat-icon>
                                         </span>
@@ -43,127 +38,38 @@
                             </li>
                         </ol>
                         <div class="list-footer">
-                            <button class="footer-btn" (click)="startAdding('todo')">
-                                <div class="add-content" *ngIf="!todoAdding">
+                            <button class="footer-btn" (click)="startAdding(i)">
+                                <div class="add-content" *ngIf="!column.adding">
                                     <span class="add-icon">
                                         <mat-icon class="test">add</mat-icon>
                                     </span>
                                     <span class="add-card">Add a card</span>
                                 </div>
-                                <div class="edit-item" *ngIf="todoAdding">
-                                    <textarea matInput [(ngModel)]="newTodoItem" class="new-textarea"></textarea>
-                                    <button mat-raised-button color="primary" class="add-btn" (click)="addNewItem(todoItems, newTodoItem, 'todo')">Add Item</button>
-                                    <mat-icon class="close-icon" (click)="closeNewItemDiv()">close</mat-icon>
+                                <div class="edit-item" *ngIf="column.adding">
+                                    <textarea matInput [(ngModel)]="newItemValues[column.name]" class="new-textarea"></textarea>
+                                    <button mat-raised-button color="primary" class="add-btn" (click)="addNewItem(i)">Add Item</button>
+                                    <mat-icon class="close-icon" (click)="closeNewItemDiv(column.name)">close</mat-icon>
                                 </div>
                             </button>
                         </div>
                     </div>
                 </li>
-
-                <!-- In progress items column -->
-                <li class="column" cdkDropList [cdkDropListData]="inProgressItems" (cdkDropListDropped)="drop($event)">
-                    <div class="column-wrapper">
-                        <div class="column-header">
-                            <div class="header">
-                                <h2 role="textbox">In Progress</h2>
+                <div class="column">
+                    <div class="column-header new-column-content">
+                        <div class="header" *ngIf="!addNewColumn" (click)="openColumnInput()">
+                            <mat-icon class="add-icon">add</mat-icon>
+                            <h2 role="textbox">Add another list</h2>
+                        </div>
+                        <div class="" *ngIf="addNewColumn">
+                            <textarea matInput [(ngModel)]="newColumnTitle" class="column-textarea"></textarea>
+                            <div class="btn-container">
+                                <button mat-raised-button color="primary" class="add-btn" (click)="createNewColumn()">Add list</button>
+                                <mat-icon class="close-icon">close</mat-icon>
                             </div>
-                            <button #inProgressBtn class="column-button" (click)="openInProgressDialog()">
-                                <span class="btn-icon">
-                                    <span class="overflow-menu">
-                                        <mat-icon class="menu-icon">menu</mat-icon>
-                                    </span>
-                                </span>
-                            </button>
-                        </div>
-                        <div class="top-buffer"></div>
-                        <ol class="column-list" data-auto-scrollable="true">
-                            <li class="data-column-list" *ngFor="let item of inProgressItems; let i = index" cdkDrag [cdkDragDisabled]="item.editing">
-                                <div class="column-item">
-                                    <div class="card" *ngIf="!item.editing">
-                                        <a class="item" href="/" dir="auto">{{ item.value }}</a>
-                                    </div>
-                                    <div class="edit-item" *ngIf="item.editing">
-                                        <textarea matInput [(ngModel)]="item.value" class="edit-textarea"></textarea>
-                                        <button mat-raised-button color="primary" class="save-btn" (click)="saveChanges(i, inProgressItems)">Save</button>
-                                    </div>
-                                    <button class="edit-card" (click)="startEditing(item)">
-                                        <span *ngIf="!item.editing">
-                                            <mat-icon class="edit-icon">edit</mat-icon>
-                                        </span>
-                                    </button>
-                                </div>
-                            </li>
-                        </ol>
-                        <div class="list-footer">
-                            <button class="footer-btn" (click)="startAdding('inProgress')">
-                                <div class="add-content" *ngIf="!inProgressAdding">
-                                    <span class="add-icon">
-                                        <mat-icon class="test">add</mat-icon>
-                                    </span>
-                                    <span class="add-card">Add a card</span>
-                                </div>
-                                <div class="edit-item" *ngIf="inProgressAdding">
-                                    <textarea matInput [(ngModel)]="newInProgressItem" class="new-textarea"></textarea>
-                                    <button mat-raised-button color="primary" class="add-btn" (click)="addNewItem(inProgressItems, newInProgressItem, 'inProgress')">Add Item</button>
-                                    <mat-icon class="close-icon" (click)="closeNewItemDiv()">close</mat-icon>
-                                </div>
-                            </button>
                         </div>
                     </div>
-                </li>
-
-                <!-- Done items column -->
-                <li class="column" cdkDropList [cdkDropListData]="doneItems" (cdkDropListDropped)="drop($event)">
-                    <div class="column-wrapper">
-                        <div class="column-header">
-                            <div class="header">
-                                <h2 role="textbox">Done</h2>
-                            </div>
-                            <button #doneBtn class="column-button" (click)="openDoneDialog()">
-                                <span class="btn-icon">
-                                    <span class="overflow-menu">
-                                        <mat-icon class="menu-icon">menu</mat-icon>
-                                    </span>
-                                </span>
-                            </button>
-                        </div>
-                        <div class="top-buffer"></div>
-                        <ol class="column-list" data-auto-scrollable="true">
-                            <li class="data-column-list" *ngFor="let item of doneItems; let i = index" cdkDrag [cdkDragDisabled]="item.editing">
-                                <div class="column-item">
-                                    <div class="card" *ngIf="!item.editing">
-                                        <a class="item" href="/" dir="auto">{{ item.value }}</a>
-                                    </div>
-                                    <div class="edit-item" *ngIf="item.editing">
-                                        <textarea matInput [(ngModel)]="item.value" class="edit-textarea"></textarea>
-                                        <button mat-raised-button color="primary" class="save-btn" (click)="saveChanges(i, doneItems)">Save</button>
-                                    </div>
-                                    <button class="edit-card" (click)="startEditing(item)">
-                                        <span *ngIf="!item.editing">
-                                            <mat-icon class="edit-icon">edit</mat-icon>
-                                        </span>
-                                    </button>
-                                </div>
-                            </li>
-                        </ol>
-                        <div class="list-footer">
-                            <button class="footer-btn" (click)="startAdding('done')">
-                                <div class="add-content" *ngIf="!doneAdding">
-                                    <span class="add-icon">
-                                        <mat-icon class="test">add</mat-icon>
-                                    </span>
-                                    <span class="add-card">Add a card</span>
-                                </div>
-                                <div class="add-item" *ngIf="doneAdding">
-                                    <textarea matInput [(ngModel)]="newDoneItem" class="new-textarea"></textarea>
-                                    <button mat-raised-button color="primary" class="add-btn" (click)="addNewItem(doneItems, newDoneItem, 'done')">Add Item</button>
-                                    <mat-icon class="close-icon" (click)="closeNewItemDiv()">close</mat-icon>
-                                </div>
-                            </button>
-                        </div>
-                    </div>
-                </li>
-            </ol>    
+                </div>
+            </ol>
         </div>
     </div>
 </div>
