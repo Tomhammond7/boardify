@@ -7,6 +7,7 @@ import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { MatDialogModule } from '@angular/material/dialog';
+import { DatePipe } from '@angular/common';
 
 import { AppRoutingModule } from './app-routing.module';
 
@@ -18,6 +19,7 @@ import { LoginComponent } from './auth/login/login.component';
 import { SidenavComponent } from './layout/sidenav/sidenav.component';
 import { LayoutComponent } from './layout/layout.component';
 import { HomeComponent } from './home/home.component';
+import { ColumnDialogComponent } from './column-dialog/column-dialog.component';
 import { ItemDialogComponent } from './item-dialog/item-dialog.component';
 
 @NgModule({
@@ -30,6 +32,7 @@ import { ItemDialogComponent } from './item-dialog/item-dialog.component';
     SidenavComponent,
     LayoutComponent,
     HomeComponent,
+    ColumnDialogComponent,
     ItemDialogComponent
   ],
   imports: [
@@ -43,7 +46,7 @@ import { ItemDialogComponent } from './item-dialog/item-dialog.component';
     MatCardModule,
     MatDialogModule
   ],
-  providers: [],
+  providers: [DatePipe],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

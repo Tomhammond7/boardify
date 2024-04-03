@@ -1,12 +1,8 @@
 <span mat-dialog-title>
-    <span class="title">List Actions</span>
+    <h3 class="title">{{ data.item.value }}</h3>
+    <span class="column-name">in list <u>{{ data.columnName }}</u></span>
     <button mat-icon-button mat-dialog-close aria-label="Close" class="close-button">
       <mat-icon>close</mat-icon>
     </button>
+    <span class="date-added">Date created: {{ data.item.dateAdded |  date:'medium' }}</span>
 </span>
-<div mat-dialog-content>
-    <li>
-      <button mat-button color="primary" (click)="addCard()" style="color: #999;">Add Card</button>
-    </li>
-</div>
-  

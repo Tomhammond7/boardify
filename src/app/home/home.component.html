@@ -23,7 +23,7 @@
                             <li class="data-column-list" *ngFor="let item of column.items; let j = index" cdkDrag [cdkDragDisabled]="item.editing">
                                 <div class="column-item">
                                     <div class="card" *ngIf="!item.editing">
-                                        <a class="item" href="/" dir="auto">{{ item.value }}</a>
+                                        <span class="item" (click)="openCard(j, item, column.name)">{{ item.value }}</span>
                                     </div>
                                     <div class="edit-item" *ngIf="item.editing">
                                         <textarea matInput [(ngModel)]="item.value" class="edit-textarea"></textarea>

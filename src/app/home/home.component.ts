@@ -1,6 +1,7 @@
 import { Component, ChangeDetectorRef, OnInit, ElementRef, ViewChild} from '@angular/core';
 import { CdkDragDrop, moveItemInArray, transferArrayItem } from '@angular/cdk/drag-drop';
 import { MatDialog } from '@angular/material/dialog';
+import { ColumnDialogComponent } from '../column-dialog/column-dialog.component';
 import { ItemDialogComponent } from '../item-dialog/item-dialog.component';
 
 @Component({
@@ -9,7 +10,7 @@ import { ItemDialogComponent } from '../item-dialog/item-dialog.component';
   styleUrls: ['./home.component.less']
 })
 export class HomeComponent implements OnInit {
-  columns: { name: string, items: { value: string, editing: boolean }[], adding: boolean }[] = [];
+  columns: { name: string, items: { value: string, editing: boolean, dateAdded: Date }[], adding: boolean }[] = [];
   newColumnTitle: string = '';
   newItemValue: string = '';
   newItemValues: { [key: string]: string } = {};
@@ -42,7 +43,7 @@ export class HomeComponent implements OnInit {
     }
   }
 
-  drop(event: CdkDragDrop<{ value: string; editing: boolean; }[]>, columnIndex: number) {
+  drop(event: CdkDragDrop<{ value: string; editing: boolean; dateAdded: Date }[]>, columnIndex: number) {
     if (event.container.data) {
       if (event.previousContainer === event.container) {
         moveItemInArray(event.container.data, event.previousIndex, event.currentIndex);
@@ -68,18 +69,37 @@ export class HomeComponent implements OnInit {
       left: `${rect.left}px`
     };
 
-    const dialogRef = this.dialog.open(ItemDialogComponent, {
+    const dialogRef = this.dialog.open(ColumnDialogComponent, {
       width: '300px',
       height: '500px',
       position: dialogPosition,
-      panelClass: 'item-dialog'
+      panelClass: 'column-dialog'
     });
 
     dialogRef.afterClosed().subscribe(result => {
-      console.log('Dialog closed with result:', result);
-      if (result === 'add-card') {
-        this.openAddCard(columnIndex);
+      switch (result) {
+        case "add-card":
+          this.openAddCard(columnIndex);
+        break;
+        case "order-items":
+          this.orderItems(columnIndex);
+        break;
       }
+    });
+  }
+
+  openCard(columnIndex: number, item: any, columnName: string): void {
+    this.selectedColumnIndex = columnIndex;
+
+    const dialogRef = this.dialog.open(ItemDialogComponent, {
+      width: '800px',
+      height: '850px',
+      panelClass: 'item-dialog',
+      data: { item: item, columnName: columnName}
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      console.log(result);
     });
   }
 
@@ -88,10 +108,20 @@ export class HomeComponent implements OnInit {
     this.dialog.closeAll;
   }
 
+  orderItems(columnIndex: number): void {
+    const columnItems = this.columns[columnIndex].items;
+
+    columnItems.sort((a, b) => {
+      return new Date(b.dateAdded).getTime() - new Date(a.dateAdded).getTime();
+    });
+
+    this.columns[columnIndex].items = columnItems;
+  }
+
   addNewItem(columnIndex: number) {
     const newItemValue = this.newItemValues[this.columns[columnIndex].name];
     if (newItemValue && newItemValue.trim() !== '') {
-      this.columns[columnIndex].items.push({ value: newItemValue, editing: false });
+      this.columns[columnIndex].items.push({ value: newItemValue, editing: false, dateAdded: new Date() });
       this.saveChangesToLocalStorage();
       this.newItemValues[this.columns[columnIndex].name] = '';
 
@@ -113,8 +143,6 @@ export class HomeComponent implements OnInit {
   }
 
   closeNewItemDiv(columnType: string) {
-    console.log('Closing new item div for column:', columnType);
-
     const columnIndex = this.columns.findIndex(column => column.name === columnType);
     if (columnIndex !== -1) {
         this.columns[columnIndex].adding = false;
@@ -172,7 +200,7 @@ export class HomeComponent implements OnInit {
         const orderedColumnNames: string[] = JSON.parse(columnOrder);
         this.columns = orderedColumnNames.map(columnName =>
             this.columns.find(column => column.name === columnName)
-        ).filter(column => column) as { name: string, items: { value: string, editing: boolean }[], adding: boolean }[];
+        ).filter(column => column) as { name: string, items: { value: string, editing: boolean, dateAdded: Date }[], adding: boolean }[];
     }
   }
 }
