@@ -5,12 +5,12 @@
         <div class="board-canvas">
             <ol class="table-container" cdkDropListGroup>
                 <li class="column" *ngFor="let column of columns; let i = index" cdkDropList [cdkDropListData]="column.items" (cdkDropListDropped)="drop($event, i)">
-                    <div class="column-wrapper" cdkDrag cdkDropList (cdkDropListData)="columns" (cdkDropListDropped)="dropColumn($event)">
+                    <div class="column-wrapper">
                         <div class="column-header">
                             <div class="header">
                                 <h2 role="textbox">{{ column.name }}</h2>
                             </div>
-                            <button #addColumnBtn class="column-button" (click)="openDialog(addColumnBtn)">
+                            <button #addColumnBtn class="column-button" (click)="openDialog(addColumnBtn, i)">
                                 <span class="btn-icon">
                                     <span class="overflow-menu">
                                         <mat-icon class="menu-icon">menu</mat-icon>
@@ -38,19 +38,19 @@
                             </li>
                         </ol>
                         <div class="list-footer">
-                            <button class="footer-btn" (click)="startAdding(i)">
-                                <div class="add-content" *ngIf="!column.adding">
+                            <button class="footer-btn" (click)="startAdding(i)" *ngIf="!column.adding">
+                                <div class="add-content">
                                     <span class="add-icon">
                                         <mat-icon class="test">add</mat-icon>
                                     </span>
                                     <span class="add-card">Add a card</span>
                                 </div>
-                                <div class="edit-item" *ngIf="column.adding">
-                                    <textarea matInput [(ngModel)]="newItemValues[column.name]" class="new-textarea"></textarea>
-                                    <button mat-raised-button color="primary" class="add-btn" (click)="addNewItem(i)">Add Item</button>
-                                    <mat-icon class="close-icon" (click)="closeNewItemDiv(column.name)">close</mat-icon>
-                                </div>
                             </button>
+                            <div class="edit-item" *ngIf="column.adding">
+                                <textarea matInput [(ngModel)]="newItemValues[column.name]" class="edit-textarea" ></textarea>
+                                <button mat-raised-button color="primary" class="add-btn" (click)="addNewItem(i)">Add Item</button>
+                                <mat-icon class="close-icon" (click)="closeNewItemDiv(column.name)">close</mat-icon>
+                            </div>
                         </div>
                     </div>
                 </li>
@@ -64,9 +64,9 @@
                             <textarea matInput [(ngModel)]="newColumnTitle" class="column-textarea"></textarea>
                             <div class="btn-container">
                                 <button mat-raised-button color="primary" class="add-btn" (click)="createNewColumn()">Add list</button>
-                                <mat-icon class="close-icon">close</mat-icon>
                             </div>
-                        </div>
+                            <mat-icon class="close-icon" (click)="closeColumnInput()">close</mat-icon>
+                        </div>                        
                     </div>
                 </div>
             </ol>

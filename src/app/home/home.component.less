@@ -202,6 +202,13 @@ textarea {
   padding: 8px 8px 0;
 }
 
+.add-content .edit-item {
+  flex: 1;
+  display: flex;
+  width: 100% !important;
+  padding-right: 40px !important;
+}
+
 .data-column-list {
   display: flex;
   flex-direction: column;
@@ -221,18 +228,18 @@ textarea {
 }
 
 .footer-btn {
+  display: flex;
   background-color: transparent;
   border-radius: 8px;
-  padding-bottom: 4px;
+  padding: 8px;
   text-decoration: none;
-  user-select: none;
   display: flex;
   align-items: center;
-  justify-content: flex-start;
-  flex-grow: 1;
-  margin: 0;
-  width: 100%;
   border: none;
+}
+
+.footer-btn .edit-item {
+  flex-grow: 1;
 }
 
 .card {
@@ -363,6 +370,7 @@ textarea {
   float: left;
   margin-top: 9px;
   padding-left: 8px;
+  cursor: pointer;
 }
 
 .new-input {

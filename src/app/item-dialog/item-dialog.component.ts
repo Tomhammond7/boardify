@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { MatDialogRef } from '@angular/material/dialog';
 
 @Component({
   selector: 'app-item-dialog',
@@ -6,5 +7,9 @@ import { Component } from '@angular/core';
   styleUrls: ['./item-dialog.component.less']
 })
 export class ItemDialogComponent {
-  constructor() {}
+  constructor(public dialogRef: MatDialogRef<ItemDialogComponent>) {}
+
+  addCard() {
+    this.dialogRef.close('add-card');
+  }
 }
