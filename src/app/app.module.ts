@@ -8,6 +8,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { MatDialogModule } from '@angular/material/dialog';
 import { DatePipe } from '@angular/common';
+import { NgxEditorModule } from 'ngx-editor';
 
 import { AppRoutingModule } from './app-routing.module';
 
@@ -44,7 +45,8 @@ import { ItemDialogComponent } from './item-dialog/item-dialog.component';
     MatInputModule,
     MatButtonModule,
     MatCardModule,
-    MatDialogModule
+    MatDialogModule,
+    NgxEditorModule
   ],
   providers: [DatePipe],
   bootstrap: [AppComponent]

@@ -1,8 +1,33 @@
 <span mat-dialog-title>
-    <h3 class="title">{{ data.item.value }}</h3>
-    <span class="column-name">in list <u>{{ data.columnName }}</u></span>
+  <div class="header">
+    <div class="header-content">
+      <mat-icon>assignment</mat-icon>
+      <h3>{{ data.item.value }}</h3>
+      <span class="column-name">in list <u>{{ data.columnName }}</u></span>
+    </div>
     <button mat-icon-button mat-dialog-close aria-label="Close" class="close-button">
       <mat-icon>close</mat-icon>
     </button>
-    <span class="date-added">Date created: {{ data.item.dateAdded |  date:'medium' }}</span>
+  </div>  
 </span>
+
+<mat-dialog-content>
+  <div class="content-section">
+    <div class="description-header">
+      <mat-icon>description</mat-icon>
+      <h3>Description</h3>
+    </div>
+    <textarea matInput placeholder="Add a detailed description..." class="description-textarea"></textarea>
+  </div>
+  <div class="comment-section">
+    <div class="comment-header">
+      <mat-icon> insert_comment</mat-icon>
+      <h3>Comments</h3>
+    </div>
+    <textarea matInput placeholder="Add a comment..." class="comment-textarea"></textarea>
+    <div class="NgxEditor__Wrapper">
+      <ngx-editor-menu [editor]="editor"> </ngx-editor-menu>
+      <ngx-editor [editor]="editor" [ngModel]="html" [disabled]="false" [placeholder]="'Type here...'" class="customer-editor"></ngx-editor>
+    </div>
+  </div>
+</mat-dialog-content>
